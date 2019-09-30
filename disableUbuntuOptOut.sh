@@ -39,3 +39,6 @@ else
     echo "[-] Removing of telemtry services failed."
     exit 1
 fi
+
+echo "[*] Decline telemetry"
+ubuntu-report -f send no
