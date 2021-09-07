@@ -1,0 +1,11 @@
+language: shell
+addons:
+  apt:
+    update: true
+jobs:
+  fast_finish: true
+os:
+  - linux
+dist: bionic
+script:
+  - ./disableUbuntuOptOut.sh
