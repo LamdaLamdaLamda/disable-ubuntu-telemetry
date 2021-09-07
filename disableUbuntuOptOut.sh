@@ -2,7 +2,7 @@
 ################ Description: ###################
 # This script will disable all opt-out under 
 # Ubuntu 18.04.1 LTS (Codename: bionic).
-# At first the telemetry domains will be reseolved 
+# At first the telemetry domains will be resolved 
 # to the local host and second all malicious services
 # will be removed from the system.
 # The following work has a system-wide effect not just
