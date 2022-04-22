@@ -29,7 +29,7 @@ echo 127.0.0.1 popcon.ubuntu.com >>/etc/hosts
 
 # Removing telemetry services:
 echo "[*] Removing telemetry services"
-apt purge -y ubuntu-report popularity-contest apport whoopsie >/dev/null 2>&1
+sudo apt purge ubuntu-report popularity-contest apport whoopsie apport-symptoms && sudo apt-mark hold ubuntu-report popularity-contest apport whoopsie apport-symptoms >/dev/null 2>&1
 
 if test $? -eq 0 
 then
