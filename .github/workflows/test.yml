@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: '.'
+
+  test-script:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu:
+          - "18.04"  # Bionic Beaver
+          - "20.04"  # Focal Fossa
+          - "22.04"  # Jammy Jellyfish
+          - "24.04"  # Noble Numbat
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image for ubuntu:${{ matrix.ubuntu }}
+        run: |
+          docker build --build-arg UBUNTU_VERSION=${{ matrix.ubuntu }} \
+            -t disable-ubuntu-telemetry:${{ matrix.ubuntu }} .
+
+      - name: Run disableUbuntuOptOut.sh and verify
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}/.github/verify.sh:/verify.sh:ro" \
+            --entrypoint bash \
+            disable-ubuntu-telemetry:${{ matrix.ubuntu }} /verify.sh

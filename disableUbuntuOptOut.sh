@@ -12,7 +12,7 @@
 ################ Implementation: ################
 clear
 
-if test `id -u` -ne 0
+if test "$(id -u)" -ne 0
 then
   echo -e "[-] Missing privileges..."
   exit 1
@@ -29,7 +29,7 @@ echo 127.0.0.1 popcon.ubuntu.com >>/etc/hosts
 
 # Removing telemetry services:
 echo "[*] Removing telemetry services"
-sudo apt purge -y ubuntu-report popularity-contest apport whoopsie apport-symptoms && sudo apt-mark hold -y ubuntu-report popularity-contest apport whoopsie apport-symptoms >/dev/null 2>&1
+sudo apt purge -y ubuntu-report popularity-contest apport whoopsie apport-symptoms && sudo apt-mark hold ubuntu-report popularity-contest apport whoopsie apport-symptoms >/dev/null 2>&1
 
 if test $? -eq 0 
 then
@@ -39,6 +39,3 @@ else
     echo "[-] Removing of telemtry services failed."
     exit 1
 fi
-
-echo "[*] Decline telemetry"
-ubuntu-report -f send no
