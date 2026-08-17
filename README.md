@@ -37,6 +37,20 @@ This affects the global machine, not just a single user.
 ## Alternative
 Alternatively you can download and install the docker image __ubuntu:bionic__.
 
+# Testing with Docker
+The repository ships a `Dockerfile` to try out the script against different Ubuntu versions without touching your host system.
+
+Build the image for a specific Ubuntu version using the `UBUNTU_VERSION` build argument (defaults to `22.04`), then run it:
+
+```bash
+docker build --build-arg UBUNTU_VERSION=20.04 -t disable-ubuntu-telemetry:20.04 .
+docker run --rm disable-ubuntu-telemetry:20.04
+```
+
+Supported versions: `18.04`, `20.04`, `22.04`, `24.04`.
+
+The same setup is used in the [GitHub Actions CI pipeline](.github/workflows/test.yml), which runs the script against all four versions on every push and pull request.
+
 # Sources:  
 [Article about the Ubuntu telemetry](https://www.bleepingcomputer.com/news/linux/ubuntu-reveals-desktop-telemetry-for-the-first-time/ "bleepingcomputer.com")
 
