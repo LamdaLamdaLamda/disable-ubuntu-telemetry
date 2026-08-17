@@ -12,7 +12,7 @@
 ################ Implementation: ################
 clear
 
-if test `id -u` -ne 0
+if test "$(id -u)" -ne 0
 then
   echo -e "[-] Missing privileges..."
   exit 1
@@ -39,6 +39,3 @@ else
     echo "[-] Removing of telemtry services failed."
     exit 1
 fi
-
-echo "[*] Decline telemetry"
-ubuntu-report -f send no

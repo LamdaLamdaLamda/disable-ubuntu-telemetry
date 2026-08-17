@@ -26,33 +26,17 @@ jobs:
           - "20.04"  # Focal Fossa
           - "22.04"  # Jammy Jellyfish
           - "24.04"  # Noble Numbat
-    container:
-      image: ubuntu:${{ matrix.ubuntu }}
     steps:
-      - name: Install git and sudo for checkout/script
-        run: |
-          apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y git sudo ca-certificates
-
       - uses: actions/checkout@v4
 
-      - name: Run disableUbuntuOptOut.sh
+      - name: Build image for ubuntu:${{ matrix.ubuntu }}
         run: |
-          chmod +x disableUbuntuOptOut.sh
-          ./disableUbuntuOptOut.sh
+          docker build --build-arg UBUNTU_VERSION=${{ matrix.ubuntu }} \
+            -t disable-ubuntu-telemetry:${{ matrix.ubuntu }} .
 
-      - name: Verify hosts file entries
+      - name: Run disableUbuntuOptOut.sh and verify
         run: |
-          grep -q "metrics.ubuntu.com" /etc/hosts
-          grep -q "popcon.ubuntu.com" /etc/hosts
-
-      - name: Verify telemetry packages are removed
-        run: |
-          for pkg in ubuntu-report popularity-contest apport whoopsie apport-symptoms; do
-            status=$(dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null || true)
-            if [ "$status" = "install ok installed" ]; then
-              echo "[-] $pkg is still installed"
-              exit 1
-            fi
-          done
-          echo "[+] All telemetry packages removed"
+          docker run --rm \
+            -v "${{ github.workspace }}/.github/verify.sh:/verify.sh:ro" \
+            --entrypoint bash \
+            disable-ubuntu-telemetry:${{ matrix.ubuntu }} /verify.sh
